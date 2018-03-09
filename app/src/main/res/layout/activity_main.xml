@@ -9,6 +9,16 @@
     tools:context="com.baris.osctest.MainActivity">
 
 
+    <ToggleButton
+        android:id="@+id/toggleButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/freqText"
+        android:layout_alignParentStart="true"
+        android:text="ToggleButton"
+        android:textOff="0"
+        android:textOn="1" />
+
     <SeekBar
         android:id="@+id/attackBar"
         android:layout_width="match_parent"
@@ -122,13 +132,12 @@
         android:text="Connect" />
 
     <Button
-        android:id="@+id/playBtn"
+        android:id="@+id/button4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="23dp"
-        android:text="Play" />
+        android:layout_alignTop="@+id/toggleButton"
+        android:layout_marginStart="11dp"
+        android:layout_toEndOf="@+id/toggleButton"
+        android:text="Button" />
 
 </RelativeLayout>
