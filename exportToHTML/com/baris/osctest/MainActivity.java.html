@@ -1,0 +1,267 @@
+<html>
+<head>
+<title>MainActivity.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #999999; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(0,0,128); font-weight: bold; }
+.s1 { color: rgb(0,0,0); }
+.s2 { color: rgb(128,128,128); font-style: italic; }
+.s3 { color: rgb(0,128,0); font-weight: bold; }
+.s4 { color: rgb(0,0,255); }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+MainActivity.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">package </span><span class="s1">com.baris.osctest; 
+ 
+</span><span class="s0">import </span><span class="s1">android.support.v7.app.AppCompatActivity; 
+</span><span class="s0">import </span><span class="s1">android.os.Bundle; 
+</span><span class="s0">import </span><span class="s1">android.view.MotionEvent; 
+</span><span class="s0">import </span><span class="s1">android.view.View; 
+</span><span class="s0">import </span><span class="s1">android.widget.Button; 
+</span><span class="s0">import </span><span class="s1">android.widget.EditText; 
+</span><span class="s0">import </span><span class="s1">android.widget.SeekBar; 
+</span><span class="s0">import </span><span class="s1">android.widget.TextView; 
+ 
+</span><span class="s0">import </span><span class="s1">java.net.*; 
+</span><span class="s0">import </span><span class="s1">java.util.*; 
+ 
+</span><span class="s0">import </span><span class="s1">com.illposed.osc.*; 
+ 
+</span><span class="s0">import </span><span class="s1">xdroid.toaster.Toaster; 
+ 
+</span><span class="s0">import static </span><span class="s1">xdroid.toaster.Toaster.toast; 
+</span><span class="s0">import static </span><span class="s1">xdroid.toaster.Toaster.toastLong; 
+ 
+ 
+ 
+</span><span class="s0">public class </span><span class="s1">MainActivity </span><span class="s0">extends </span><span class="s1">AppCompatActivity { 
+ 
+    </span><span class="s0">private </span><span class="s1">EditText ipEt, portEt; 
+    </span><span class="s0">private </span><span class="s1">Button playButton; 
+    </span><span class="s0">private </span><span class="s1">SeekBar freqBar, atkBar, dcyBar, sstBar, rlsBar; 
+    </span><span class="s0">private </span><span class="s1">TextView freqTxt, atkTxt, dcyTxt, sstTxt, rlsTxt; 
+ 
+    </span><span class="s2">// These two variables hold the IP address and port number.</span><span class="s1"> 
+    </span><span class="s0">private </span><span class="s1">String myIP; 
+    </span><span class="s0">private int </span><span class="s1">myPort; 
+ 
+    </span><span class="s2">// This is used to send messages</span><span class="s1"> 
+    </span><span class="s0">private </span><span class="s1">OSCPortOut oscPortOut; 
+ 
+    </span><span class="s2">// This thread will contain all the code that pertains to OSC</span><span class="s1"> 
+    </span><span class="s0">private </span><span class="s1">Thread oscThread = </span><span class="s0">new </span><span class="s1">Thread() { 
+        @Override 
+        </span><span class="s0">public void </span><span class="s1">run() { 
+            </span><span class="s2">// The first part of the run() method initializes the OSCPortOut for sending messages.</span><span class="s1"> 
+ 
+            </span><span class="s0">try </span><span class="s1">{ 
+                </span><span class="s2">// Connect to some IP address and port</span><span class="s1"> 
+                oscPortOut = </span><span class="s0">new </span><span class="s1">OSCPortOut(InetAddress.getByName(myIP), myPort); 
+                Toaster.toast(</span><span class="s3">&quot;connected&quot;</span><span class="s1">); 
+            } </span><span class="s0">catch</span><span class="s1">(UnknownHostException e) { 
+                </span><span class="s2">// Error handling when your IP isn't found</span><span class="s1"> 
+                Toaster.toast(</span><span class="s3">&quot;IP not found&quot;</span><span class="s1">); 
+            } </span><span class="s0">catch</span><span class="s1">(Exception e) { 
+                </span><span class="s2">// Error handling for any other errors</span><span class="s1"> 
+                Toaster.toast(</span><span class="s3">&quot;error&quot;</span><span class="s1">); 
+            } 
+ 
+            </span><span class="s2">// The second part of the run() method loops infinitely </span><span class="s1"> 
+            </span><span class="s0">final boolean</span><span class="s1">[] toggleState = {</span><span class="s0">false</span><span class="s1">}; 
+            </span><span class="s0">while</span><span class="s1">(</span><span class="s0">true</span><span class="s1">) { 
+                </span><span class="s0">if </span><span class="s1">(oscPortOut != </span><span class="s0">null</span><span class="s1">){ 
+                    </span><span class="s0">final </span><span class="s1">Object[] toggle = </span><span class="s0">new </span><span class="s1">Object[</span><span class="s4">1</span><span class="s1">]; 
+ 
+                    playButton.setOnTouchListener(</span><span class="s0">new </span><span class="s1">View.OnTouchListener() { 
+                        @Override 
+                        </span><span class="s0">public boolean </span><span class="s1">onTouch(View view, MotionEvent motionEvent) { 
+                            </span><span class="s0">switch </span><span class="s1">(motionEvent.getAction()){ 
+                                </span><span class="s0">case </span><span class="s1">MotionEvent.ACTION_DOWN: 
+                                </span><span class="s0">case </span><span class="s1">MotionEvent.ACTION_CANCEL: 
+                                </span><span class="s0">case </span><span class="s1">MotionEvent.ACTION_MOVE: 
+                                    toggle[</span><span class="s4">0</span><span class="s1">] = </span><span class="s4">1</span><span class="s1">; 
+                                    </span><span class="s0">break</span><span class="s1">; 
+                                </span><span class="s0">case </span><span class="s1">MotionEvent.ACTION_UP: 
+                                    toggle[</span><span class="s4">0</span><span class="s1">] = </span><span class="s4">0</span><span class="s1">; 
+                                    </span><span class="s0">break</span><span class="s1">; 
+                            } 
+                            toggleState[</span><span class="s4">0</span><span class="s1">] = </span><span class="s0">true</span><span class="s1">; 
+                            </span><span class="s0">return false</span><span class="s1">; 
+                        } 
+                    }); 
+ 
+ 
+ 
+ 
+                    Object[] thingsToSend = </span><span class="s0">new </span><span class="s1">Object[</span><span class="s4">5</span><span class="s1">]; 
+                    thingsToSend[</span><span class="s4">0</span><span class="s1">] = freqBar.getProgress(); 
+                    thingsToSend[</span><span class="s4">1</span><span class="s1">] = atkBar.getProgress(); 
+                    thingsToSend[</span><span class="s4">2</span><span class="s1">] = dcyBar.getProgress(); 
+                    thingsToSend[</span><span class="s4">3</span><span class="s1">] = (</span><span class="s0">float</span><span class="s1">)sstBar.getProgress()/</span><span class="s4">100</span><span class="s1">; 
+                    thingsToSend[</span><span class="s4">4</span><span class="s1">] = rlsBar.getProgress(); 
+ 
+                    OSCMessage adsrmsg = </span><span class="s0">new </span><span class="s1">OSCMessage(</span><span class="s3">&quot;/adsr&quot;</span><span class="s1">, Arrays.asList(thingsToSend)); 
+                    OSCMessage togglemsg = </span><span class="s0">new </span><span class="s1">OSCMessage(</span><span class="s3">&quot;/toggle&quot;</span><span class="s1">, Arrays.asList(toggle)); 
+                    </span><span class="s0">try </span><span class="s1">{ 
+                        </span><span class="s2">// Send the messages</span><span class="s1"> 
+                        oscPortOut.send(adsrmsg); 
+                        </span><span class="s0">if</span><span class="s1">(toggleState[</span><span class="s4">0</span><span class="s1">]){ 
+                            oscPortOut.send(togglemsg); 
+                            toggleState[</span><span class="s4">0</span><span class="s1">] = </span><span class="s0">false</span><span class="s1">; 
+                        } 
+ 
+ 
+ 
+                    } </span><span class="s0">catch </span><span class="s1">(Exception e) { 
+                        </span><span class="s2">// Error handling for some error</span><span class="s1"> 
+                    } 
+                } </span><span class="s0">else return</span><span class="s1">; 
+            } 
+        } 
+    }; 
+ 
+    @Override 
+    </span><span class="s0">protected void </span><span class="s1">onCreate(Bundle savedInstanceState) { 
+        </span><span class="s0">super</span><span class="s1">.onCreate(savedInstanceState); 
+        setContentView(R.layout.activity_main); 
+ 
+        ipEt = (EditText) findViewById(R.id.ipEditText); 
+        portEt = (EditText) findViewById(R.id.portEditText); 
+ 
+        playButton = (Button) findViewById(R.id.playBtn); 
+ 
+        freqBar = (SeekBar) findViewById(R.id.freqBar); 
+        atkBar = (SeekBar) findViewById(R.id.attackBar); 
+        dcyBar = (SeekBar) findViewById(R.id.decayBar); 
+        sstBar = (SeekBar) findViewById(R.id.sustainBar); 
+        rlsBar = (SeekBar) findViewById(R.id.releaseBar); 
+ 
+        freqTxt = (TextView) findViewById(R.id.freqText); 
+        atkTxt = (TextView) findViewById(R.id.atkText); 
+        dcyTxt = (TextView) findViewById(R.id.dcyText); 
+        sstTxt = (TextView) findViewById(R.id.sstText); 
+        rlsTxt = (TextView) findViewById(R.id.rlsText); 
+ 
+        freqTxt.setText(</span><span class="s3">&quot;Frequency: &quot; </span><span class="s1">+ freqBar.getProgress()); 
+        atkTxt.setText(</span><span class="s3">&quot;Attack: &quot; </span><span class="s1">+ atkBar.getProgress()); 
+        dcyTxt.setText(</span><span class="s3">&quot;Decay: &quot; </span><span class="s1">+ dcyBar.getProgress()); 
+        sstTxt.setText(</span><span class="s3">&quot;Sustain: &quot; </span><span class="s1">+ sstBar.getProgress()); 
+        rlsTxt.setText(</span><span class="s3">&quot;Release: &quot; </span><span class="s1">+ rlsBar.getProgress()); 
+ 
+        freqBar.setOnSeekBarChangeListener(</span><span class="s0">new </span><span class="s1">SeekBar.OnSeekBarChangeListener() { 
+            </span><span class="s0">int </span><span class="s1">prog_val = </span><span class="s4">0</span><span class="s1">; 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">onProgressChanged(SeekBar seekBar, </span><span class="s0">int </span><span class="s1">progress, </span><span class="s0">boolean </span><span class="s1">b) { 
+                prog_val = progress; 
+                freqTxt.setText(</span><span class="s3">&quot;Frequency: &quot; </span><span class="s1">+ progress); 
+ 
+            } 
+ 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">onStartTrackingTouch(SeekBar seekBar) { 
+ 
+            } 
+ 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">onStopTrackingTouch(SeekBar seekBar) { 
+                freqTxt.setText(</span><span class="s3">&quot;Frequency: &quot; </span><span class="s1">+ prog_val); 
+            } 
+        }); 
+ 
+        atkBar.setOnSeekBarChangeListener(</span><span class="s0">new </span><span class="s1">SeekBar.OnSeekBarChangeListener() { 
+            </span><span class="s0">int </span><span class="s1">prog_val = </span><span class="s4">0</span><span class="s1">; 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">onProgressChanged(SeekBar seekBar, </span><span class="s0">int </span><span class="s1">progress, </span><span class="s0">boolean </span><span class="s1">b) { 
+                prog_val = progress; 
+                atkTxt.setText(</span><span class="s3">&quot;Attack: &quot; </span><span class="s1">+ progress); 
+ 
+            } 
+ 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">onStartTrackingTouch(SeekBar seekBar) { 
+ 
+            } 
+ 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">onStopTrackingTouch(SeekBar seekBar) { 
+                atkTxt.setText(</span><span class="s3">&quot;Attack: &quot; </span><span class="s1">+ prog_val); 
+            } 
+        }); 
+ 
+        dcyBar.setOnSeekBarChangeListener(</span><span class="s0">new </span><span class="s1">SeekBar.OnSeekBarChangeListener() { 
+            </span><span class="s0">int </span><span class="s1">prog_val = </span><span class="s4">0</span><span class="s1">; 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">onProgressChanged(SeekBar seekBar, </span><span class="s0">int </span><span class="s1">progress, </span><span class="s0">boolean </span><span class="s1">b) { 
+                prog_val = progress; 
+                dcyTxt.setText(</span><span class="s3">&quot;Decay: &quot; </span><span class="s1">+ progress); 
+ 
+            } 
+ 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">onStartTrackingTouch(SeekBar seekBar) { 
+ 
+            } 
+ 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">onStopTrackingTouch(SeekBar seekBar) { 
+                dcyTxt.setText(</span><span class="s3">&quot;Decay: &quot; </span><span class="s1">+ prog_val); 
+            } 
+        }); 
+ 
+        sstBar.setOnSeekBarChangeListener(</span><span class="s0">new </span><span class="s1">SeekBar.OnSeekBarChangeListener() { 
+            </span><span class="s0">float </span><span class="s1">prog_val = </span><span class="s4">0</span><span class="s1">; 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">onProgressChanged(SeekBar seekBar, </span><span class="s0">int </span><span class="s1">progress, </span><span class="s0">boolean </span><span class="s1">b) { 
+                prog_val = (</span><span class="s0">float</span><span class="s1">) progress / </span><span class="s4">100</span><span class="s1">; 
+                sstTxt.setText(</span><span class="s3">&quot;Sustain: &quot; </span><span class="s1">+ (</span><span class="s0">float</span><span class="s1">) progress / </span><span class="s4">100</span><span class="s1">); 
+ 
+            } 
+ 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">onStartTrackingTouch(SeekBar seekBar) { 
+ 
+            } 
+ 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">onStopTrackingTouch(SeekBar seekBar) { 
+                sstTxt.setText(</span><span class="s3">&quot;Sustain: &quot; </span><span class="s1">+ prog_val); 
+            } 
+        }); 
+ 
+        rlsBar.setOnSeekBarChangeListener(</span><span class="s0">new </span><span class="s1">SeekBar.OnSeekBarChangeListener() { 
+            </span><span class="s0">int </span><span class="s1">prog_val = </span><span class="s4">0</span><span class="s1">; 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">onProgressChanged(SeekBar seekBar, </span><span class="s0">int </span><span class="s1">progress, </span><span class="s0">boolean </span><span class="s1">b) { 
+                prog_val = progress; 
+                rlsTxt.setText(</span><span class="s3">&quot;Release: &quot; </span><span class="s1">+ progress); 
+ 
+            } 
+ 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">onStartTrackingTouch(SeekBar seekBar) { 
+ 
+            } 
+ 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">onStopTrackingTouch(SeekBar seekBar) { 
+                rlsTxt.setText(</span><span class="s3">&quot;Release: &quot; </span><span class="s1">+ prog_val); 
+            } 
+        }); 
+    } 
+ 
+    </span><span class="s0">public void </span><span class="s1">startOsc(View v){ 
+        myIP = ipEt.getText().toString(); 
+        myPort = Integer.parseInt(portEt.getText().toString()); 
+        oscThread.start(); 
+    } 
+} 
+</span></pre>
+</body>
+</html>

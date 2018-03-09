@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="18dp"
+    android:paddingRight="18dp"
+    tools:context="com.baris.osctest.MainActivity">
+
+
+    <SeekBar
+        android:id="@+id/attackBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:max="300"
+        android:layout_centerVertical="true" />
+
+    <SeekBar
+        android:id="@+id/decayBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/attackBar"
+        android:max="500"
+        android:layout_marginTop="18dp" />
+
+    <SeekBar
+        android:id="@+id/sustainBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/decayBar"
+        android:layout_marginTop="18dp" />
+
+    <SeekBar
+        android:id="@+id/releaseBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/sustainBar"
+        android:max="1000"
+        android:layout_marginTop="18dp" />
+
+    <TextView
+        android:id="@+id/atkText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/attackBar"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="19dp"
+        android:text="Attack: " />
+
+    <TextView
+        android:id="@+id/dcyText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/attackBar"
+        android:text="Decay: " />
+
+    <TextView
+        android:id="@+id/sstText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/decayBar"
+        android:text="Sustain: " />
+
+    <TextView
+        android:id="@+id/rlsText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/sustainBar"
+        android:text="Release: " />
+
+    <SeekBar
+        android:id="@+id/freqBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/attackBar"
+        android:layout_marginBottom="52dp"
+        android:max="2000" />
+
+    <TextView
+        android:id="@+id/freqText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/freqBar"
+        android:layout_alignStart="@+id/freqBar"
+        android:text="Frequency: " />
+
+    <EditText
+        android:id="@+id/ipEditText"
+        android:layout_width="230dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:ems="10"
+        android:hint="IP-Adress"
+        android:text="192.168.3.120"
+        android:inputType="textUri" />
+
+    <EditText
+        android:id="@+id/portEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:layout_marginLeft="230dp"
+        android:hint="Port"
+        android:text="8887"
+        android:inputType="number" />
+
+    <Button
+        android:id="@+id/connectBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/ipEditText"
+        android:onClick="startOsc"
+        android:text="Connect" />
+
+    <Button
+        android:id="@+id/playBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="23dp"
+        android:text="Play" />
+
+</RelativeLayout>
