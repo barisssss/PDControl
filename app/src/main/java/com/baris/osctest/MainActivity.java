@@ -30,7 +30,6 @@ public class MainActivity extends AppCompatActivity {
     private SeekBar freqBar, atkBar, dcyBar, sstBar, rlsBar;
     private TextView freqTxt, atkTxt, dcyTxt, sstTxt, rlsTxt;
 
-    private Button btn;
 
     // These two variables hold the IP address and port number.
     private String myIP;
@@ -111,27 +110,10 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private View.OnTouchListener btnListener = new View.OnTouchListener() {
-        @Override
-        public boolean onTouch(View view, MotionEvent motionEvent) {
-            switch (motionEvent.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    Log.d("btn", "pressed");
-                    break;
-                case MotionEvent.ACTION_UP:
-                    Log.d("btn", "released");
-                    view.performClick();
-                    break;
-            }
-            return false;
-        }
-    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        btn = (Button) findViewById(R.id.button4);
 
         ipEt = (EditText) findViewById(R.id.ipEditText);
         portEt = (EditText) findViewById(R.id.portEditText);
