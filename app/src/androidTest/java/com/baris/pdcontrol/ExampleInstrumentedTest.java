@@ -1,4 +1,4 @@
-package com.baris.osctest;
+package com.baris.pdcontrol;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
