@@ -129,18 +129,18 @@ public class MainActivity extends AppCompatActivity {
         sstTxt = (TextView) findViewById(R.id.sstText);
         rlsTxt = (TextView) findViewById(R.id.rlsText);
 
-        freqTxt.setText("Frequency: " + freqBar.getProgress());
-        atkTxt.setText("Attack: " + atkBar.getProgress());
-        dcyTxt.setText("Decay: " + dcyBar.getProgress());
-        sstTxt.setText("Sustain: " + sstBar.getProgress());
-        rlsTxt.setText("Release: " + rlsBar.getProgress());
+        freqTxt.setText("Frequency: " + freqBar.getProgress() + " Hz");
+        atkTxt.setText("Attack: " + atkBar.getProgress() + " ms");
+        dcyTxt.setText("Decay: " + dcyBar.getProgress() + " ms");
+        sstTxt.setText("Sustain: " + sstBar.getProgress() + "%");
+        rlsTxt.setText("Release: " + rlsBar.getProgress() + " ms");
 
         freqBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             int prog_val = 0;
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
                 prog_val = progress;
-                freqTxt.setText("Frequency: " + progress);
+                freqTxt.setText("Frequency: " + progress + " Hz");
 
             }
 
@@ -151,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                freqTxt.setText("Frequency: " + prog_val);
+                freqTxt.setText("Frequency: " + prog_val + " Hz");
             }
         });
 
@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
                 prog_val = progress;
-                atkTxt.setText("Attack: " + progress);
+                atkTxt.setText("Attack: " + progress + " ms");
 
             }
 
@@ -171,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                atkTxt.setText("Attack: " + prog_val);
+                atkTxt.setText("Attack: " + prog_val + " ms");
             }
         });
 
@@ -180,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
                 prog_val = progress;
-                dcyTxt.setText("Decay: " + progress);
+                dcyTxt.setText("Decay: " + progress + " ms");
 
             }
 
@@ -191,16 +191,16 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                dcyTxt.setText("Decay: " + prog_val);
+                dcyTxt.setText("Decay: " + prog_val + " ms");
             }
         });
 
         sstBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            float prog_val = 0;
+            int prog_val = 0;
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
-                prog_val = (float) progress / 100;
-                sstTxt.setText("Sustain: " + (float) progress / 100);
+                prog_val = progress;
+                sstTxt.setText("Sustain: " + progress + "%");
 
             }
 
@@ -211,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                sstTxt.setText("Sustain: " + prog_val);
+                sstTxt.setText("Sustain: " + prog_val + "%");
             }
         });
 
@@ -220,7 +220,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
                 prog_val = progress;
-                rlsTxt.setText("Release: " + progress);
+                rlsTxt.setText("Release: " + progress + " ms");
 
             }
 
@@ -231,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                rlsTxt.setText("Release: " + prog_val);
+                rlsTxt.setText("Release: " + prog_val + " ms");
             }
         });
     }
