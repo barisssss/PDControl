@@ -2,9 +2,10 @@ package com.baris.pdcontrol;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.MotionEvent;
+
+import android.util.Log;
 import android.view.View;
-import android.widget.Button;
+
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -13,6 +14,10 @@ import java.net.*;
 import java.util.*;
 
 import com.illposed.osc.*;
+import com.ramotion.fluidslider.FluidSlider;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
 
 import xdroid.toaster.Toaster;
 
@@ -24,9 +29,10 @@ import static xdroid.toaster.Toaster.toastLong;
 public class MainActivity extends AppCompatActivity {
 
     private EditText ipEt, portEt;
-    private Button playButton;
-    private SeekBar freqBar, atkBar, dcyBar, sstBar, rlsBar;
-    private TextView freqTxt, atkTxt, dcyTxt, sstTxt, rlsTxt;
+    private SeekBar atkBar, dcyBar, sstBar, rlsBar;
+    private TextView atkTxt, dcyTxt, sstTxt, rlsTxt;
+    private FluidSlider freqFluid;
+
 
     // These two variables hold the IP address and port number.
     private String myIP;
@@ -59,29 +65,35 @@ public class MainActivity extends AppCompatActivity {
                 if (oscPortOut != null){
                     final Object[] toggle = new Object[1];
 
-                    playButton.setOnTouchListener(new View.OnTouchListener() {
+
+                    freqFluid.setBeginTrackingListener(new Function0<Unit>() {
                         @Override
-                        public boolean onTouch(View view, MotionEvent motionEvent) {
-                            switch (motionEvent.getAction()){
-                                case MotionEvent.ACTION_DOWN:
-                                case MotionEvent.ACTION_CANCEL:
-                                case MotionEvent.ACTION_MOVE:
-                                    toggle[0] = 1;
-                                    break;
-                                case MotionEvent.ACTION_UP:
-                                    toggle[0] = 0;
-                                    break;
-                            }
+                        public Unit invoke() {
+                            Log.d("D", "setBeginTrackingListener");
+                            toggle[0] = 1;
                             toggleState[0] = true;
-                            return false;
+                            return Unit.INSTANCE;
+                        }
+                    });
+
+                    freqFluid.setEndTrackingListener(new Function0<Unit>() {
+                        @Override
+                        public Unit invoke() {
+                            Log.d("D", "setEndTrackingListener");
+                            toggle[0] = 0;
+                            toggleState[0] = true;
+                            return Unit.INSTANCE;
+
                         }
                     });
 
 
 
 
+
                     Object[] thingsToSend = new Object[5];
-                    thingsToSend[0] = freqBar.getProgress();
+                    thingsToSend[0] = freqFluid.getPosition() * 2000;
+
                     thingsToSend[1] = atkBar.getProgress();
                     thingsToSend[2] = dcyBar.getProgress();
                     thingsToSend[3] = (float)sstBar.getProgress()/100;
@@ -115,44 +127,38 @@ public class MainActivity extends AppCompatActivity {
         ipEt = (EditText) findViewById(R.id.ipEditText);
         portEt = (EditText) findViewById(R.id.portEditText);
 
-        playButton = (Button) findViewById(R.id.playBtn);
 
-        freqBar = (SeekBar) findViewById(R.id.freqBar);
         atkBar = (SeekBar) findViewById(R.id.attackBar);
+        atkBar.setProgress(100);
         dcyBar = (SeekBar) findViewById(R.id.decayBar);
+        dcyBar.setProgress(50);
         sstBar = (SeekBar) findViewById(R.id.sustainBar);
+        sstBar.setProgress(40);
         rlsBar = (SeekBar) findViewById(R.id.releaseBar);
+        rlsBar.setProgress(400);
 
-        freqTxt = (TextView) findViewById(R.id.freqText);
         atkTxt = (TextView) findViewById(R.id.atkText);
         dcyTxt = (TextView) findViewById(R.id.dcyText);
         sstTxt = (TextView) findViewById(R.id.sstText);
         rlsTxt = (TextView) findViewById(R.id.rlsText);
 
-        freqTxt.setText("Frequency: " + freqBar.getProgress() + " Hz");
+
         atkTxt.setText("Attack: " + atkBar.getProgress() + " ms");
         dcyTxt.setText("Decay: " + dcyBar.getProgress() + " ms");
         sstTxt.setText("Sustain: " + sstBar.getProgress() + "%");
         rlsTxt.setText("Release: " + rlsBar.getProgress() + " ms");
 
-        freqBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            int prog_val = 0;
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
-                prog_val = progress;
-                freqTxt.setText("Frequency: " + progress + " Hz");
+        freqFluid = (FluidSlider) findViewById(R.id.freqFluid);
 
-            }
 
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                freqTxt.setText("Frequency: " + prog_val + " Hz");
-            }
+        freqFluid.setStartText("0");
+        freqFluid.setBubbleText("0");
+        freqFluid.setPosition(0);
+        freqFluid.setEndText("2000");
+        freqFluid.setPositionListener(pos -> {
+            final String value = String.valueOf( (int)((pos) * 2000) );
+            freqFluid.setBubbleText(value);
+            return Unit.INSTANCE;
         });
 
         atkBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
