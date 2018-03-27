@@ -1,4 +1,4 @@
-package com.baris.osctest;
+package com.baris.pdcontrol;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;

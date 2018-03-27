@@ -1,4 +1,4 @@
-package com.baris.osctest;
+package com.baris.pdcontrol;
 
 import org.junit.Test;
 
