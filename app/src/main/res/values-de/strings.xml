@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PDControl</string>
+    <string name="ip_adress">IP-Adresse</string>
+    <string name="port">Port</string>
+    <string name="connect">Verbinden</string>
+    <string name="sine">Sinus</string>
+    <string name="saw">Sägezahn</string>
+    <string name="frequency">Frequenz:</string>
+</resources>

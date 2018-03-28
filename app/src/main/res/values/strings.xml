@@ -1,7 +1,17 @@
 <resources>
     <string name="app_name">PDControl</string>
-    <string-array name="waves_array">
-        <item>Sine</item>
-        <item>Saw</item>
-    </string-array>
+    <string name="ip_adress">IP-Address</string>
+    <string name="default_ip" translatable="false">192.168.3.120</string>
+    <string name="port">Port</string>
+    <string name="default_port" translatable="false">8887</string>
+    <string name="connect">Connect</string>
+    <string name="sine">Sine</string>
+    <string name="saw">Saw</string>
+    <string name="attack" translatable="false">Attack:</string>
+    <string name="decay" translatable="false">Decay:</string>
+    <string name="sustain" translatable="false">Sustain:</string>
+    <string name="release" translatable="false">Release:</string>
+    <string name="frequency">Frequency:</string>
+    <string name="milli" translatable="false"> ms</string>
+    <string name="percent" translatable="false">%</string>
 </resources>

@@ -6,8 +6,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+
 import android.widget.EditText;
 import android.widget.SeekBar;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import java.net.*;
@@ -16,16 +18,9 @@ import java.util.*;
 import com.illposed.osc.*;
 import com.ramotion.fluidslider.FluidSlider;
 
-import org.honorato.multistatetogglebutton.MultiStateToggleButton;
-import org.honorato.multistatetogglebutton.ToggleButton;
-
 import kotlin.Unit;
-import kotlin.jvm.functions.Function0;
 
 import xdroid.toaster.Toaster;
-
-import static xdroid.toaster.Toaster.toast;
-import static xdroid.toaster.Toaster.toastLong;
 
 
 
@@ -35,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private SeekBar atkBar, dcyBar, sstBar, rlsBar;
     private TextView atkTxt, dcyTxt, sstTxt, rlsTxt;
     private FluidSlider freqFluid;
-    private MultiStateToggleButton wavesBtn;
+    private Switch wavesSwitch;
 
 
     // These two variables hold the IP address and port number.
@@ -63,47 +58,44 @@ public class MainActivity extends AppCompatActivity {
                 Toaster.toast("error");
             }
 
-            // The second part of the run() method loops infinitely
+            // Variables for use in the loop
             final boolean[] toggleState = {false};
-            final boolean[] wavesState = {false};
-            final Object[] waves = new Object[1];
-            waves[0] = 0;
+            final Object[] waves = new Object[2]; //for sending sine-saw switch state
+            waves[0] = 1;
+            waves[1] = 0;
+
+            // The second part of the run() method loops infinitely
             while(true) {
                 if (oscPortOut != null){
-                    final Object[] values = new Object[5];
-                    final Object[] toggle = new Object[1];
+                    final Object[] values = new Object[5]; // for sending frequency and adsr
+                    final Object[] toggle = new Object[1]; // for sending on/off signal
 
-
-                    freqFluid.setBeginTrackingListener(new Function0<Unit>() {
-                        @Override
-                        public Unit invoke() {
-                            Log.d("D", "setBeginTrackingListener");
-                            toggle[0] = 1;
-                            toggleState[0] = true;
-                            return Unit.INSTANCE;
-                        }
+                    //Listeners for the frequency slider
+                    freqFluid.setBeginTrackingListener(() -> {
+                        Log.d("D", "setBeginTrackingListener");
+                        toggle[0] = 1;
+                        toggleState[0] = true;
+                        return Unit.INSTANCE;
                     });
 
-                    freqFluid.setEndTrackingListener(new Function0<Unit>() {
-                        @Override
-                        public Unit invoke() {
-                            Log.d("D", "setEndTrackingListener");
-                            toggle[0] = 0;
-                            toggleState[0] = true;
-                            return Unit.INSTANCE;
+                    freqFluid.setEndTrackingListener(() -> {
+                        Log.d("D", "setEndTrackingListener");
+                        toggle[0] = 0;
+                        toggleState[0] = true;
+                        return Unit.INSTANCE;
 
-                        }
                     });
 
-                    wavesBtn.setOnValueChangedListener(new ToggleButton.OnValueChangedListener() {
-                        @Override
-                        public void onValueChanged(int position) {
-                            waves[0] = position;
-                            wavesState[0] = true;
-                            Log.d("D", "Position: " + position);
+                    //Listener for the wave switch
+                    wavesSwitch.setOnClickListener(view -> {
+                        if(wavesSwitch.isChecked()){
+                            waves[0] = 0;
+                            waves[1] = 1;
+                        } else {
+                            waves[0] = 1;
+                            waves[1] = 0;
                         }
                     });
-
 
                     values[0] = freqFluid.getPosition() * 2000;
                     values[1] = atkBar.getProgress();
@@ -111,25 +103,21 @@ public class MainActivity extends AppCompatActivity {
                     values[3] = (float)sstBar.getProgress()/100;
                     values[4] = rlsBar.getProgress();
 
-                    OSCMessage adsrmsg = new OSCMessage("/adsr", Arrays.asList(values));
+                    //Building the messages with the OSC addresses and the arrays
+                    OSCMessage adsrmsg = new OSCMessage("/fadsr", Arrays.asList(values));
                     OSCMessage togglemsg = new OSCMessage("/toggle", Arrays.asList(toggle));
                     OSCMessage wavesmsg = new OSCMessage("/waves", Arrays.asList(waves));
 
                     try {
                         // Send the messages
                         oscPortOut.send(adsrmsg);
+                        oscPortOut.send(wavesmsg);
 
+                        //only send on/off signal if it has changed
                         if(toggleState[0]){
                             oscPortOut.send(togglemsg);
                             toggleState[0] = false;
                         }
-                        if(wavesState[0]){
-                            oscPortOut.send(wavesmsg);
-                            wavesState[0] = false;
-                        }
-
-
-
                     } catch (Exception e) {
                         // Error handling for some error
                     }
@@ -143,32 +131,29 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ipEt = (EditText) findViewById(R.id.ipEditText);
-        portEt = (EditText) findViewById(R.id.portEditText);
+        ipEt = findViewById(R.id.ipEditText);
+        portEt = findViewById(R.id.portEditText);
 
-
-        atkBar = (SeekBar) findViewById(R.id.attackBar);
+        atkBar = findViewById(R.id.attackBar);
         atkBar.setProgress(100);
-        dcyBar = (SeekBar) findViewById(R.id.decayBar);
+        dcyBar = findViewById(R.id.decayBar);
         dcyBar.setProgress(50);
-        sstBar = (SeekBar) findViewById(R.id.sustainBar);
+        sstBar = findViewById(R.id.sustainBar);
         sstBar.setProgress(40);
-        rlsBar = (SeekBar) findViewById(R.id.releaseBar);
+        rlsBar = findViewById(R.id.releaseBar);
         rlsBar.setProgress(400);
 
-        atkTxt = (TextView) findViewById(R.id.atkText);
-        dcyTxt = (TextView) findViewById(R.id.dcyText);
-        sstTxt = (TextView) findViewById(R.id.sstText);
-        rlsTxt = (TextView) findViewById(R.id.rlsText);
-
+        atkTxt = findViewById(R.id.atkText);
+        dcyTxt = findViewById(R.id.dcyText);
+        sstTxt = findViewById(R.id.sstText);
+        rlsTxt = findViewById(R.id.rlsText);
 
         atkTxt.setText("Attack: " + atkBar.getProgress() + " ms");
         dcyTxt.setText("Decay: " + dcyBar.getProgress() + " ms");
         sstTxt.setText("Sustain: " + sstBar.getProgress() + "%");
         rlsTxt.setText("Release: " + rlsBar.getProgress() + " ms");
 
-        freqFluid = (FluidSlider) findViewById(R.id.freqFluid);
-
+        freqFluid = findViewById(R.id.freqFluid);
 
         freqFluid.setStartText("0");
         freqFluid.setBubbleText("0");
@@ -260,8 +245,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        wavesBtn = (MultiStateToggleButton) findViewById(R.id.wavesToggle);
-        wavesBtn.setValue(0);
+        wavesSwitch = findViewById(R.id.wavesToggle);
     }
 
     public void startOsc(View v){
