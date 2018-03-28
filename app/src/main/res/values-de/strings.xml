@@ -7,4 +7,5 @@
     <string name="sine">Sinus</string>
     <string name="saw">Sägezahn</string>
     <string name="frequency">Frequenz:</string>
+    <string name="disconnect">Trennen</string>
 </resources>

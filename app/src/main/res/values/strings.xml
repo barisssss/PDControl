@@ -5,6 +5,7 @@
     <string name="port">Port</string>
     <string name="default_port" translatable="false">8887</string>
     <string name="connect">Connect</string>
+    <string name="disconnect">Disconnect</string>
     <string name="sine">Sine</string>
     <string name="saw">Saw</string>
     <string name="attack" translatable="false">Attack:</string>

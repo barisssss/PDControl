@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 
 
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.Switch;
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView atkTxt, dcyTxt, sstTxt, rlsTxt;
     private FluidSlider freqFluid;
     private Switch wavesSwitch;
+    private Button connectBtn;
 
 
     // These two variables hold the IP address and port number.
@@ -42,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
     // This thread will contain all the code that pertains to OSC
     private Thread oscThread = new Thread() {
+
         @Override
         public void run() {
             // The first part of the run() method initializes the OSCPortOut for sending messages.
@@ -61,11 +64,16 @@ public class MainActivity extends AppCompatActivity {
             // Variables for use in the loop
             final boolean[] toggleState = {false};
             final Object[] waves = new Object[2]; //for sending sine-saw switch state
-            waves[0] = 1;
-            waves[1] = 0;
+            if(wavesSwitch.isChecked()){
+                waves[0] = 0;
+                waves[1] = 1;
+            } else {
+                waves[0] = 1;
+                waves[1] = 0;
+            }
 
             // The second part of the run() method loops infinitely
-            while(true) {
+            while(!isInterrupted()) {
                 if (oscPortOut != null){
                     final Object[] values = new Object[5]; // for sending frequency and adsr
                     final Object[] toggle = new Object[1]; // for sending on/off signal
@@ -118,11 +126,18 @@ public class MainActivity extends AppCompatActivity {
                             oscPortOut.send(togglemsg);
                             toggleState[0] = false;
                         }
+
                     } catch (Exception e) {
                         // Error handling for some error
                     }
                 } else return;
             }
+        }
+
+        @Override
+        public void interrupt() {
+            super.interrupt();
+            oscPortOut.close();
         }
     };
 
@@ -131,6 +146,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        connectBtn = findViewById(R.id.connectBtn);
         ipEt = findViewById(R.id.ipEditText);
         portEt = findViewById(R.id.portEditText);
 
@@ -246,11 +262,59 @@ public class MainActivity extends AppCompatActivity {
         });
 
         wavesSwitch = findViewById(R.id.wavesToggle);
+
+        if(oscThread.isInterrupted()){
+            connectBtn.setText(R.string.connect);
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(oscThread.isAlive()){
+            connectBtn.setText(R.string.connect);
+            oscThread.interrupt();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(oscThread.isAlive()){
+            connectBtn.setText(R.string.connect);
+            oscThread.interrupt();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(oscThread.isAlive()){
+            connectBtn.setText(R.string.connect);
+            oscThread.interrupt();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(oscThread.isInterrupted()){
+            connectBtn.setText(R.string.connect);
+        }
     }
 
     public void startOsc(View v){
         myIP = ipEt.getText().toString();
         myPort = Integer.parseInt(portEt.getText().toString());
-        oscThread.start();
+        if(oscThread.isInterrupted()) {
+            connectBtn.setText(R.string.disconnect);
+            oscThread.start();
+        } else if (oscThread.isAlive()) {
+            connectBtn.setText(R.string.connect);
+            oscThread.interrupt();
+        } else {
+            connectBtn.setText(R.string.disconnect);
+            oscThread.start();
+        }
     }
 }

@@ -4,13 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingTop="10dp"
     android:paddingLeft="18dp"
     android:paddingRight="18dp"
     tools:context="com.baris.pdcontrol.MainActivity">
 
     <EditText
         android:id="@+id/ipEditText"
-        android:layout_width="230dp"
+        android:layout_width="140dp"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
@@ -21,21 +22,20 @@
 
     <EditText
         android:id="@+id/portEditText"
-        android:layout_width="wrap_content"
+        android:layout_width="60dp"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:layout_marginStart="230dp"
+        android:layout_marginStart="140dp"
         android:hint="@string/port"
         android:text="@string/default_port"
         android:inputType="number" />
 
     <Button
         android:id="@+id/connectBtn"
-        android:layout_width="match_parent"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="10dp"
-        android:layout_below="@+id/ipEditText"
+        android:layout_marginBottom="18dp"
+        android:layout_toEndOf="@+id/portEditText"
         android:background="@color/colorPrimary"
         android:onClick="startOsc"
         android:text="@string/connect"
@@ -147,7 +147,6 @@
         android:id="@+id/freqFluid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="-20dp"
         android:layout_below="@+id/freqText"
         android:layout_centerHorizontal="true"
         app:bar_color="@color/colorPrimary"
