@@ -34,7 +34,7 @@
         android:id="@+id/connectBtn"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="18dp"
+        android:layout_marginBottom="20dp"
         android:layout_toEndOf="@+id/portEditText"
         android:background="@color/colorPrimary"
         android:onClick="startOsc"
@@ -76,7 +76,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/wavesToggle"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:text="@string/attack" />
 
     <SeekBar
@@ -139,7 +139,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/releaseBar"
+        android:layout_above="@+id/freqFluid"
         android:layout_marginTop="10dp"
         android:text="@string/frequency" />
 
@@ -147,7 +147,8 @@
         android:id="@+id/freqFluid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/freqText"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="15dp"
         android:layout_centerHorizontal="true"
         app:bar_color="@color/colorPrimary"
         app:size="normal"/>

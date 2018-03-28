@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
 
-                    values[0] = freqFluid.getPosition() * 2000;
+                    values[0] = freqFluid.getPosition() * 4000;
                     values[1] = atkBar.getProgress();
                     values[2] = dcyBar.getProgress();
                     values[3] = (float)sstBar.getProgress()/100;
@@ -174,9 +174,9 @@ public class MainActivity extends AppCompatActivity {
         freqFluid.setStartText("0");
         freqFluid.setBubbleText("0");
         freqFluid.setPosition(0);
-        freqFluid.setEndText("2000");
+        freqFluid.setEndText("4000");
         freqFluid.setPositionListener(pos -> {
-            final String value = String.valueOf( (int)((pos) * 2000) );
+            final String value = String.valueOf( (int)((pos) * 4000) );
             freqFluid.setBubbleText(value);
             return Unit.INSTANCE;
         });
