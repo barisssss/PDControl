@@ -85,7 +85,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_below="@id/atkText"
-        android:max="300"
+        android:max="5000"
         android:layout_centerVertical="true" />
 
     <TextView
@@ -101,7 +101,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/dcyText"
-        android:max="500"/>
+        android:max="5000"/>
 
     <TextView
         android:id="@+id/sstText"
@@ -132,7 +132,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/rlsText"
-        android:max="1000"/>
+        android:max="5000"/>
 
     <TextView
         android:id="@+id/freqText"

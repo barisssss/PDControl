@@ -151,13 +151,13 @@ public class MainActivity extends AppCompatActivity {
         portEt = findViewById(R.id.portEditText);
 
         atkBar = findViewById(R.id.attackBar);
-        atkBar.setProgress(100);
+        atkBar.setProgress(500);
         dcyBar = findViewById(R.id.decayBar);
-        dcyBar.setProgress(50);
+        dcyBar.setProgress(250);
         sstBar = findViewById(R.id.sustainBar);
         sstBar.setProgress(40);
         rlsBar = findViewById(R.id.releaseBar);
-        rlsBar.setProgress(400);
+        rlsBar.setProgress(800);
 
         atkTxt = findViewById(R.id.atkText);
         dcyTxt = findViewById(R.id.dcyText);
