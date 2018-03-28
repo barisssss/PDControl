@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">oscTest</string>
+    <string name="app_name">PDControl</string>
+    <string-array name="waves_array">
+        <item>Sine</item>
+        <item>Saw</item>
+    </string-array>
 </resources>

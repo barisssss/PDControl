@@ -16,6 +16,9 @@ import java.util.*;
 import com.illposed.osc.*;
 import com.ramotion.fluidslider.FluidSlider;
 
+import org.honorato.multistatetogglebutton.MultiStateToggleButton;
+import org.honorato.multistatetogglebutton.ToggleButton;
+
 import kotlin.Unit;
 import kotlin.jvm.functions.Function0;
 
@@ -32,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private SeekBar atkBar, dcyBar, sstBar, rlsBar;
     private TextView atkTxt, dcyTxt, sstTxt, rlsTxt;
     private FluidSlider freqFluid;
+    private MultiStateToggleButton wavesBtn;
 
 
     // These two variables hold the IP address and port number.
@@ -61,8 +65,12 @@ public class MainActivity extends AppCompatActivity {
 
             // The second part of the run() method loops infinitely
             final boolean[] toggleState = {false};
+            final boolean[] wavesState = {false};
+            final Object[] waves = new Object[1];
+            waves[0] = 0;
             while(true) {
                 if (oscPortOut != null){
+                    final Object[] values = new Object[5];
                     final Object[] toggle = new Object[1];
 
 
@@ -87,26 +95,37 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
 
+                    wavesBtn.setOnValueChangedListener(new ToggleButton.OnValueChangedListener() {
+                        @Override
+                        public void onValueChanged(int position) {
+                            waves[0] = position;
+                            wavesState[0] = true;
+                            Log.d("D", "Position: " + position);
+                        }
+                    });
 
 
+                    values[0] = freqFluid.getPosition() * 2000;
+                    values[1] = atkBar.getProgress();
+                    values[2] = dcyBar.getProgress();
+                    values[3] = (float)sstBar.getProgress()/100;
+                    values[4] = rlsBar.getProgress();
 
-
-                    Object[] thingsToSend = new Object[5];
-                    thingsToSend[0] = freqFluid.getPosition() * 2000;
-
-                    thingsToSend[1] = atkBar.getProgress();
-                    thingsToSend[2] = dcyBar.getProgress();
-                    thingsToSend[3] = (float)sstBar.getProgress()/100;
-                    thingsToSend[4] = rlsBar.getProgress();
-
-                    OSCMessage adsrmsg = new OSCMessage("/adsr", Arrays.asList(thingsToSend));
+                    OSCMessage adsrmsg = new OSCMessage("/adsr", Arrays.asList(values));
                     OSCMessage togglemsg = new OSCMessage("/toggle", Arrays.asList(toggle));
+                    OSCMessage wavesmsg = new OSCMessage("/waves", Arrays.asList(waves));
+
                     try {
                         // Send the messages
                         oscPortOut.send(adsrmsg);
+
                         if(toggleState[0]){
                             oscPortOut.send(togglemsg);
                             toggleState[0] = false;
+                        }
+                        if(wavesState[0]){
+                            oscPortOut.send(wavesmsg);
+                            wavesState[0] = false;
                         }
 
 
@@ -240,6 +259,9 @@ public class MainActivity extends AppCompatActivity {
                 rlsTxt.setText("Release: " + prog_val + " ms");
             }
         });
+
+        wavesBtn = (MultiStateToggleButton) findViewById(R.id.wavesToggle);
+        wavesBtn.setValue(0);
     }
 
     public void startOsc(View v){

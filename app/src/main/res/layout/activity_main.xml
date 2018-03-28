@@ -41,13 +41,29 @@
         android:textAlignment="center"
         android:textColor="@android:color/white" />
 
+    <org.honorato.multistatetogglebutton.MultiStateToggleButton
+        android:id="@+id/wavesToggle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_below="@id/connectBtn"
+        app:values="@array/waves_array"
+        app:mstbColorPressedBackground="@color/colorPrimaryDark"
+        app:mstbColorPressedBackgroundResource="@color/colorPrimaryDark"
+        app:mstbColorPressedText="@color/white"
+        app:mstbColorNotPressedBackground="@color/colorPrimary"
+        app:mstbColorNotPressedBackgroundResource="@color/colorPrimary"
+        app:mstbColorNotPressedText="@color/white"
+        />
+
+
     <TextView
         android:id="@+id/atkText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/connectBtn"
+        android:layout_below="@id/wavesToggle"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="19dp"
         android:text="Attack: " />
 
     <SeekBar
